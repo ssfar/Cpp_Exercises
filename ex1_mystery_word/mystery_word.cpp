@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <cstdlib>
 #include <fstream>
 #include "mystery_word.h"
@@ -16,7 +17,7 @@ int	main()
 				mystery_word = rand_dictionary_word();
 				break;
 			case 2:
-				std::cout << "Entre un mot\n";
+				std::cout << "Entre un mot : ";
 				std::cin >> mystery_word;
 				clear_terminal();
 				break;
@@ -38,10 +39,13 @@ int	menu()
 	do
 	{
 		std::cout << "--MENU--\n1- Un joueur\n2- Deux joueurs\n3- Quitter\n";
-		std::cout << "\nEntrer un chiffre : ";
-		std::cin >> game_mode;
+		std::cout << "\nEntrez le chiffre correspondant à votre choix : ";
+		std::cin >> std::setw(1) >> game_mode;
+		clear_cin();
 		clear_terminal();
 	}	while (game_mode < 1 || game_mode > 3);
+	std::cin.clear();
+	std::cin.ignore(2147483647, '\n');
 	return (game_mode);
 }
 
@@ -50,7 +54,7 @@ int	menu()
 ** - mystery_word : The string that contains the word to find.
 */
 
-void guess_loop(const std::string &mystery_word)
+void	guess_loop(const std::string &mystery_word)
 {
 	std::string	mixed_word = rand_mix_string(mystery_word);
 	std::string	assumed_word;
@@ -62,7 +66,7 @@ void guess_loop(const std::string &mystery_word)
 			std::cout << "Ce n'est pas le mot !\n";
 		else
 		{
-			std::cout << "Bravo !\nAppuie sur entrée\n";
+			std::cout << "Bravo !\nAppuyez sur entrée pour retourner au menu.";
 			std::cin.ignore();
 			getline(std::cin, assumed_word);
 			break;
@@ -104,7 +108,6 @@ std::string	rand_dictionary_word()
 	dictionary.seekg(0, std::ios::end);
 	dictionary.seekg(rand() % dictionary.tellg(), std::ios::beg);
 	std::string	mystery_word;
-	std::cin.ignore();
 	getline(dictionary, mystery_word);
 	if (dictionary.eof())
 		dictionary.seekg(0, std::ios::beg);
@@ -117,11 +120,24 @@ std::string	rand_dictionary_word()
 ** Execute the right system command deppending on the OS to clear the terminal.
 */
 
-void clear_terminal()
+void	clear_terminal()
 {
 	#if defined(__linux__) || defined(__unix__) || defined(__APPLE__)
 		system("clear");
 	#elif defined(_WIN32) || defined(_WIN64)
 		system("cls");
 	#endif
+}
+
+/*
+** Clear unwanted input form cin.
+*/
+
+void	clear_cin()
+{
+	while (!std::cin.good())
+	{
+		std::cin.clear();
+		std::cin.ignore(2147483647, '\n');
+	}
 }
