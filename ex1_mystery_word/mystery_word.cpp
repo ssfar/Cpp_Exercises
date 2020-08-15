@@ -1,6 +1,6 @@
 #include <iostream>
-#include <iomanip>
 #include <cstdlib>
+#include <cstdio>
 #include <fstream>
 #include "mystery_word.h"
 
@@ -40,7 +40,7 @@ int	menu()
 	{
 		std::cout << "--MENU--\n1- Un joueur\n2- Deux joueurs\n3- Quitter\n";
 		std::cout << "\nEntrez le chiffre correspondant à votre choix : ";
-		std::cin >> std::setw(1) >> game_mode;
+		std::cin >> game_mode;
 		clear_cin();
 		clear_terminal();
 	}	while (game_mode < 1 || game_mode > 3);
