@@ -2,7 +2,8 @@
 #include <cstdlib>
 #include <cstdio>
 #include <fstream>
-#include "mystery_word.h"
+#include <limits>
+#include "mystery_word.hpp"
 
 int	main()
 {
@@ -18,7 +19,7 @@ int	main()
 				break;
 			case 2:
 				std::cout << "Entre un mot : ";
-				std::cin >> mystery_word;
+				get_word(std::cin, mystery_word);
 				clear_terminal();
 				break;
 			case 3:
@@ -30,28 +31,25 @@ int	main()
 
 /*
 ** Display the game menu in a loop while the input of the user is not correct.
-** Return : The option choosen in the menu.
+** Return: The option choosen in the menu.
 */
 
 int	menu()
 {
-	int	game_mode;
+	int	game_mode = 0;
 	do
 	{
 		std::cout << "--MENU--\n1- Un joueur\n2- Deux joueurs\n3- Quitter\n";
 		std::cout << "\nEntrez le chiffre correspondant à votre choix : ";
-		std::cin >> game_mode;
-		clear_cin();
+		get_int(std::cin, game_mode);
 		clear_terminal();
 	}	while (game_mode < 1 || game_mode > 3);
-	std::cin.clear();
-	std::cin.ignore(2147483647, '\n');
 	return (game_mode);
 }
 
 /*
 ** Loop while the player haven't found the mystery_word.
-** - mystery_word : The string that contains the word to find.
+** - mystery_word: The string that contains the word to find.
 */
 
 void	guess_loop(const std::string &mystery_word)
@@ -61,35 +59,32 @@ void	guess_loop(const std::string &mystery_word)
 	while (1)
 	{
 		std::cout << "Quel est ce mot ? " << mixed_word << std::endl;
-		std::cin >> assumed_word;
+		get_word(std::cin, assumed_word);
 		if (assumed_word != mystery_word)
 			std::cout << "Ce n'est pas le mot !\n";
 		else
 		{
 			std::cout << "Bravo !\nAppuyez sur entrée pour retourner au menu.";
 			std::cin.ignore();
-			getline(std::cin, assumed_word);
+			clear_terminal();
 			break;
 		}
 	}
-	clear_terminal();
 }
 
 /*
 ** Create a shuffled string form the given string.
 ** <i> rand() need to be previously initialised with srand().
-** - str : The string to mix.
-** Return : The new randomly mixed string.
+** - str: The string to mix.
+** Return: The new randomly mixed string.
 */
 
-std::string	rand_mix_string(std::string str)
+const std::string	rand_mix_string(std::string str)
 {
 	std::string	mixed_str;
-
-	while (str.size() != 0)
+	while (str.size() > 0)
 	{
 		int	pos = rand() % str.size();
-
 		mixed_str += str[pos];
 		str.erase(pos, 1);
 	}
@@ -99,25 +94,31 @@ std::string	rand_mix_string(std::string str)
 /*
 ** Pick a random word from dico.txt.
 ** <i> rand() need to be previously initialised with srand().
-** Return : The randomly choosen word string.
+** Return: The randomly choosen word string.
 */
 
-std::string	rand_dictionary_word()
+const std::string	rand_dictionary_word()
 {
 	std::ifstream	dictionary("dico.txt");
+	if (!dictionary.is_open())
+		exit_failure("dico.txt n'existe pas ou ne peut pas être ouvert");
 	dictionary.seekg(0, std::ios::end);
-	dictionary.seekg(rand() % dictionary.tellg(), std::ios::beg);
+	const int file_length = dictionary.tellg();
+	if (file_length == 0)
+		exit_failure("dico.txt est vide");
+	dictionary.seekg(rand() % file_length, std::ios::beg);
 	std::string	mystery_word;
-	getline(dictionary, mystery_word);
-	if (dictionary.eof())
+	getline(dictionary, mystery_word); // Read a line to move the cursor at the beginning of an other.
+	if (dictionary.eof()) // If eof, go back to first line.
 		dictionary.seekg(0, std::ios::beg);
-	dictionary >> mystery_word;
-	dictionary.close();
+	if (dictionary.fail())
+		dictionary.clear();
+	get_word(dictionary, mystery_word);
 	return (mystery_word);
 }
 
 /*
-** Execute the right system command deppending on the OS to clear the terminal.
+** Execute the right system command depending on the OS to clear the terminal.
 */
 
 void	clear_terminal()
@@ -130,14 +131,59 @@ void	clear_terminal()
 }
 
 /*
-** Clear unwanted input form cin.
+** Read a word from the stream to stock it inside str.
+** Then ignore everything else readed.
+** <i> If case of failure, clear the stream an return an error value.
+** - stream: The stream to read from.
+** - str: The string to put the input readed.
+** Return:	0 - Failed to read.
+**			1 - Succecfully read.
 */
 
-void	clear_cin()
+int		get_word(std::istream &stream, std::string &str)
 {
-	while (!std::cin.good())
+	int	valid = 1;
+	stream >> str;
+	if (stream.fail())
 	{
-		std::cin.clear();
-		std::cin.ignore(2147483647, '\n');
+		valid = 0;
+		stream.clear();
 	}
+	stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	return (valid);
+}
+
+/*
+** Read input from the stream to stock it inside value.
+** Then ignore everything else readed.
+** <i> If case of failure, clear the stream an return an error value.
+** - stream: The stream to read from.
+** - value: The int to put the input readed.
+** Return:	0 - Failed to read.
+**			1 - Succecfully read.
+*/
+
+int		get_int(std::istream &stream, int &value)
+{
+	int	valid = 1;
+	stream >> value;
+	if (stream.fail())
+	{
+		valid = 0;
+		stream.clear();
+	}
+	stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	return (valid);
+}
+
+/*
+** Display an error message if given and close the program.
+** - error_message: A string containing the message to print.
+*/
+
+void	exit_failure(const std::string &error_message)
+{
+	if (!error_message.empty())
+		std::cout << "ERROR: " << error_message << '.' << std::endl;
+	exit(1);
 }
