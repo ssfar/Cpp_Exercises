@@ -25,7 +25,7 @@ template <typename T>
 int	get_word(std::istream &stream, T &var)
 {
 	int	valid = 1;
-	stream >> variable;
+	stream >> var;
 	if (stream.fail())
 	{
 		valid = 0;
