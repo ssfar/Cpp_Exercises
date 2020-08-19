@@ -1,6 +1,5 @@
 #include <iostream>
 #include <cstdlib>
-#include <cstdio>
 #include <fstream>
 #include <limits>
 #include "mystery_word.hpp"

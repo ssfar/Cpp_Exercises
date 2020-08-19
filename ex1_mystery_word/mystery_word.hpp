@@ -10,9 +10,11 @@ void				guess_loop(const std::string &mystery_word);
 void				exit_failure(const std::string &error_message);
 
 /*
-** Extract from the stream,
-** one or more characters followed by a space, a '\n' or an EOF.
-** If possible, stock a representation of the data inside variable deppending on its type.
+** Read a line from the stream, and store a representation of the first, one or
+** more characters followed by a space, a '\n' or an EOF into var.
+** The representation deppend on the type of variable passed as argument.
+** The rest of the line is then discarded.
+** In case of an error, clear all flags of the stream.
 ** -stream: The stream to read from.
 ** -variable: The variable to stock the data read.
 ** Return:	0 in case of an error(stream can't be read or data can't be stored).
@@ -20,7 +22,7 @@ void				exit_failure(const std::string &error_message);
 */
 
 template <typename T> 
-int	get_word(std::istream &stream, T &variable)
+int	get_word(std::istream &stream, T &var)
 {
 	int	valid = 1;
 	stream >> variable;
