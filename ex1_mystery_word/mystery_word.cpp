@@ -19,7 +19,7 @@ int	main()
 				break;
 			case 2:
 				std::cout << "Entre un mot : ";
-				get_word(std::cin, mystery_word);
+				get_word<std::string>(std::cin, mystery_word);
 				clear_terminal();
 				break;
 			case 3:
@@ -41,7 +41,7 @@ int	menu()
 	{
 		std::cout << "--MENU--\n1- Un joueur\n2- Deux joueurs\n3- Quitter\n";
 		std::cout << "\nEntrez le chiffre correspondant à votre choix : ";
-		get_int(std::cin, game_mode);
+		get_word<int>(std::cin, game_mode);
 		clear_terminal();
 	}	while (game_mode < 1 || game_mode > 3);
 	return (game_mode);
@@ -59,7 +59,7 @@ void	guess_loop(const std::string &mystery_word)
 	while (1)
 	{
 		std::cout << "Quel est ce mot ? " << mixed_word << std::endl;
-		get_word(std::cin, assumed_word);
+		get_word<std::string>(std::cin, assumed_word);
 		if (assumed_word != mystery_word)
 			std::cout << "Ce n'est pas le mot !\n";
 		else
@@ -113,7 +113,7 @@ const std::string	rand_dictionary_word()
 		dictionary.seekg(0, std::ios::beg);
 	if (dictionary.fail())
 		dictionary.clear();
-	get_word(dictionary, mystery_word);
+	get_word<std::string>(dictionary, mystery_word);
 	return (mystery_word);
 }
 
@@ -128,52 +128,6 @@ void	clear_terminal()
 	#elif defined(_WIN32) || defined(_WIN64)
 		system("cls");
 	#endif
-}
-
-/*
-** Read a word from the stream to stock it inside str.
-** Then ignore everything else readed.
-** <i> If case of failure, clear the stream an return an error value.
-** - stream: The stream to read from.
-** - str: The string to put the input readed.
-** Return:	0 - Failed to read.
-**			1 - Succecfully read.
-*/
-
-int		get_word(std::istream &stream, std::string &str)
-{
-	int	valid = 1;
-	stream >> str;
-	if (stream.fail())
-	{
-		valid = 0;
-		stream.clear();
-	}
-	stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-	return (valid);
-}
-
-/*
-** Read input from the stream to stock it inside value.
-** Then ignore everything else readed.
-** <i> If case of failure, clear the stream an return an error value.
-** - stream: The stream to read from.
-** - value: The int to put the input readed.
-** Return:	0 - Failed to read.
-**			1 - Succecfully read.
-*/
-
-int		get_int(std::istream &stream, int &value)
-{
-	int	valid = 1;
-	stream >> value;
-	if (stream.fail())
-	{
-		valid = 0;
-		stream.clear();
-	}
-	stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-	return (valid);
 }
 
 /*
