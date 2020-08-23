@@ -10,7 +10,7 @@ J'ai implémenté en bonus :
 - Un mode "un joueur" qui pioche un mot dans un dictionnaire.  
 - Un menu pour choisir les modes ou quitter.  
 
-#### Compactibilitées : Unix (Linux, Mac OS...) et Windows.
+#### Compatibilitées : Unix (Linux, Mac OS...) et Windows.
 #### Nécessitées : Un compilateur C++ (ex: GCC, Clang ou MinGW)
 
 ![menu_SW](https://user-images.githubusercontent.com/45463065/90322409-e9710800-df53-11ea-8225-022f080007d6.png)
