@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <limits>
+#include <ctime>
 #include "mystery_word.hpp"
 
 int	main()
@@ -39,7 +40,7 @@ int	menu()
 	do
 	{
 		std::cout << "--MENU--\n1- Un joueur\n2- Deux joueurs\n3- Quitter\n";
-		std::cout << "\nEntrez le chiffre correspondant à votre choix : ";
+		std::cout << "\nEntrez le chiffre de l'option voulue : ";
 		get_word<int>(std::cin, game_mode);
 		clear_terminal();
 	}	while (game_mode < 1 || game_mode > 3);
@@ -63,7 +64,7 @@ void	guess_loop(const std::string &mystery_word)
 			std::cout << "Ce n'est pas le mot !\n";
 		else
 		{
-			std::cout << "Bravo !\nAppuyez sur entrée pour retourner au menu.";
+			std::cout << "Bravo !\nAppuyez sur \"Enter\" pour retourner au menu.";
 			std::cin.ignore();
 			clear_terminal();
 			break;
@@ -100,7 +101,7 @@ const std::string	rand_dictionary_word()
 {
 	std::ifstream	dictionary("dico.txt");
 	if (!dictionary.is_open())
-		exit_failure("dico.txt n'existe pas ou ne peut pas être ouvert");
+		exit_failure("Impossible d'ouvrir dico.txt");
 	dictionary.seekg(0, std::ios::end);
 	const int file_length = dictionary.tellg();
 	if (file_length == 0)
